@@ -1,35 +1,40 @@
-import products from '../src/menu.json';
-import foodItemTemplate from '../src/templates/food-template.hbs';
+'use strict';
 import '../src/styles.css';
+import markup from './scripts/rander-markup';
 
+//rander menu
 const menu = document.querySelector('.js-menu');
-const themeSwitcher = document.querySelector('.switch__input');
+menu.insertAdjacentHTML('beforeend', markup);
+
+//set page theme
 const body = document.querySelector('body');
+const themeSwitcher = document.querySelector('.switch__input');
 const Theme = {
   LIGHT: 'light-theme',
   DARK: 'dark-theme',
 };
+const setDarkTheme = () => {
+  body.classList.remove(Theme.LIGHT);
+  localStorage.setItem('theme', Theme.DARK);
+  body.classList.add(Theme.DARK);
+};
+const setLightTheme = () => {
+  body.classList.remove(Theme.DARK);
+  localStorage.setItem('theme', Theme.LIGHT);
+  body.classList.add(Theme.LIGHT);
+};
 
-function buildMenu(products) {
-  const markup = products.map(product => foodItemTemplate(product)).join('');
-  menu.insertAdjacentHTML('beforeend', markup);
-}
+//change theme by click
+themeSwitcher.addEventListener('click', e => {
+  if (e.target.checked) {
+    setDarkTheme();
+  } else {
+    setLightTheme();
+  }
+});
 
-buildMenu(products);
-
+//check theme after reloading page
 if (localStorage.getItem('theme') === Theme.DARK) {
   body.classList.add(Theme.DARK);
   themeSwitcher.setAttribute('checked', 'checked');
 }
-
-themeSwitcher.addEventListener('click', e => {
-  if (e.target.checked) {
-    body.classList.remove(Theme.LIGHT);
-    localStorage.setItem('theme', Theme.DARK);
-    body.classList.add(Theme.DARK);
-  } else {
-    body.classList.remove(Theme.DARK);
-    localStorage.setItem('theme', Theme.LIGHT);
-    body.classList.add(Theme.LIGHT);
-  }
-});
